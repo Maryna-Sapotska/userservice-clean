@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(CardController.REST_URL)
 @RequiredArgsConstructor
@@ -78,12 +76,6 @@ public class CardController {
                 )
         );
         return ResponseEntity.ok(cardService.getAll(holder, active, pageable));
-    }
-
-    @Operation(summary = "Get cards by id")
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CardDTO>> getByUserId(@PathVariable Long userId){
-        return ResponseEntity.ok(cardService.getByUserId(userId));
     }
 
     @Operation(summary = "Update card")
