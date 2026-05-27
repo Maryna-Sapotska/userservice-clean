@@ -4,7 +4,6 @@ import com.innowise.userservice.model.dto.CardDTO;
 import com.innowise.userservice.model.dto.CreateCardDto;
 import com.innowise.userservice.model.dto.UpdateCardDto;
 import com.innowise.userservice.service.CardService;
-import com.innowise.userservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
