@@ -27,4 +27,30 @@ public class CardSpecification {
             return cb.equal(root.get("active"), active);
         };
     }
+
+    public static Specification<Card> hasUserName(String userName) {
+        return (root, query, cb) -> {
+            if (userName == null || userName.isBlank()) {
+                return null;
+            }
+
+            return cb.like(
+                    cb.lower(root.join("user").get("name")),
+                    "%" + userName.toLowerCase() + "%"
+            );
+        };
+    }
+
+    public static Specification<Card> hasUserSurname(String userSurname) {
+        return (root, query, cb) -> {
+            if (userSurname == null || userSurname.isBlank()) {
+                return null;
+            }
+
+            return cb.like(
+                    cb.lower(root.join("user").get("surname")),
+                    "%" + userSurname.toLowerCase() + "%"
+            );
+        };
+    }
 }
