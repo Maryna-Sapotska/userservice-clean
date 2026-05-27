@@ -85,7 +85,7 @@ public class CardService {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = CacheNames.USERS_WITH_CARDS, allEntries = true),
+            @CacheEvict(value = CacheNames.USERS_WITH_CARDS, key = "#result.userId"),
             @CacheEvict(value = CacheNames.CARDS, key = "#id")
     })
     public CardDTO update(Long id, UpdateCardDto dto) {
