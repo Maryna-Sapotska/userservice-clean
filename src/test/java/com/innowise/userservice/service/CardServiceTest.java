@@ -304,6 +304,6 @@ class CardServiceTest {
         cardService.update(1L, dto);
 
         assertEquals("NEW", card.getHolder());
-        assertEquals("1111", card.getNumber()); // не должен измениться
+        assertEquals("1111", card.getNumber());
     }
 }
