@@ -117,11 +117,13 @@ public class CardService {
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = CacheNames.CARDS, key = "#id"),
-            @CacheEvict(value = CacheNames.USERS_WITH_CARDS, allEntries = true)
+            @CacheEvict(value = CacheNames.USERS_WITH_CARDS, key = "#userId")
     })
     public void delete(Long id) {
         Card card = cardRepository.findById(id)
                 .orElseThrow(() -> new CardNotFoundException(CARD_NOT_FOUND));
+
+        Long userId = card.getUser().getId();
 
         cardRepository.delete(card);
     }
