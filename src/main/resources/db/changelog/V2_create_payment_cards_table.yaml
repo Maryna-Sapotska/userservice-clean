@@ -1,0 +1,75 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-payment-cards-table
+      author: Marina
+      preConditions:
+        - not:
+            tableExists:
+              tableName: payment_cards
+      changes:
+        - createTable:
+            tableName: payment_cards
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: holder
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiration_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: active
+                  type: boolean
+                  defaultValueBoolean: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: payment_cards
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_payment_cards_user
+            onDelete: RESTRICT
+
+        - createIndex:
+            tableName: payment_cards
+            indexName: idx_cards_user_id
+            columns:
+              - column:
+                  name: user_id
+
+        - createIndex:
+            tableName: payment_cards
+            indexName: idx_cards_active
+            columns:
+              - column:
+                  name: active
