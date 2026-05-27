@@ -105,7 +105,7 @@ public class UserController {
 
     @Operation(summary = "Update user")
     @PatchMapping("/{id}")
-    public ResponseEntity<UserWithCardsDto> update(@PathVariable Long id,
+    public ResponseEntity<UserDTO> update(@PathVariable Long id,
                                                    @Valid @RequestBody UpdateUserDto dto) {
         return ResponseEntity
                 .ok(userService.update(id, dto));

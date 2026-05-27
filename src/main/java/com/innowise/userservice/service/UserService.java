@@ -59,7 +59,7 @@ public class UserService {
             @CacheEvict(value = CacheNames.USERS, key = "#id"),
             @CacheEvict(value = CacheNames.USERS_WITH_CARDS, key = "#id")
             })
-    public UserWithCardsDto update(Long id, UpdateUserDto dto) {
+    public UserDTO update(Long id, UpdateUserDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
@@ -88,7 +88,7 @@ public class UserService {
         User reloaded = userRepository.findByIdWithCards(saved.getId())
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        return userMapper.toUserWithCardsDto(reloaded);
+        return userMapper.toDTO(reloaded);
     }
 
     @Transactional(readOnly = true)

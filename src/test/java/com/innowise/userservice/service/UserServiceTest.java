@@ -159,7 +159,7 @@ class UserServiceTest {
         User user = new User();
         user.setId(id);
 
-        UserWithCardsDto response = new UserWithCardsDto();
+        UserDTO response = new UserDTO();
 
         when(userRepository.findById(id))
                 .thenReturn(Optional.of(user));
@@ -170,10 +170,10 @@ class UserServiceTest {
         when(userRepository.save(any(User.class)))
                 .thenReturn(user);
 
-        when(userMapper.toUserWithCardsDto(any(User.class)))
+        when(userMapper.toDTO(any(User.class)))
                 .thenReturn(response);
 
-        UserWithCardsDto result = userService.update(id, dto);
+        UserDTO result = userService.update(id, dto);
 
         assertNotNull(result);
 
