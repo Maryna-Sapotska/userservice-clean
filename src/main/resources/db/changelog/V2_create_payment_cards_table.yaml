@@ -58,7 +58,7 @@ databaseChangeLog:
             referencedTableName: users
             referencedColumnNames: id
             constraintName: fk_payment_cards_user
-            onDelete: RESTRICT
+            onDelete: CASCADE
 
         - createIndex:
             tableName: payment_cards
