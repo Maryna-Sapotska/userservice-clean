@@ -29,6 +29,7 @@ public class UserService {
 
     private static final String USER_NOT_FOUND = "User not found";
 
+    @Transactional
     public UserDTO create(CreateUserDto dto) {
         User user = userMapper.toEntity(dto);
         user.setActive(true);
