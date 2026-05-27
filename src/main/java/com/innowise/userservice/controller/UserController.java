@@ -91,13 +91,18 @@ public class UserController {
             @RequestParam(defaultValue = "id,asc")
             String sort) {
 
+        String[] sortParams = sort.split(",");
+
+        if (sortParams.length != 2) {
+            throw new IllegalArgumentException("Invalid sort format. Use field,direction");
+        }
+
+        Sort.Direction direction = Sort.Direction.fromString(sortParams[1]);
+
         Pageable pageable = PageRequest.of(
                 page,
                 size,
-                Sort.by(
-                        Sort.Direction.fromString(sort.split(",")[1]),
-                        sort.split(",")[0]
-                )
+                Sort.by(direction, sortParams[0])
         );
         return ResponseEntity
                 .ok(userService.getAll(name, surname, active, pageable));
