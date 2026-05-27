@@ -2,7 +2,6 @@ package com.innowise.userservice.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +22,6 @@ public class Card extends BaseEntity {
     @JsonIgnore
     private User user;
 
-    @Size(min = 16, max = 16)
     @Column(name = "number", nullable = false)
     private String number;
 
