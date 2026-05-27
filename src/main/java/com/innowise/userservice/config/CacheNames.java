@@ -1,4 +1,4 @@
-package com.innowise.userservice.model.entity;
+package com.innowise.userservice.config;
 
 public final class CacheNames {
     public static final String USERS = "users";

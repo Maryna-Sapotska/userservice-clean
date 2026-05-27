@@ -6,7 +6,7 @@ import com.innowise.userservice.model.dto.CreateUserDto;
 import com.innowise.userservice.model.dto.UpdateUserDto;
 import com.innowise.userservice.model.dto.UserDTO;
 import com.innowise.userservice.model.dto.UserWithCardsDto;
-import com.innowise.userservice.model.entity.CacheNames;
+import com.innowise.userservice.config.CacheNames;
 import com.innowise.userservice.model.entity.User;
 import com.innowise.userservice.repository.UserRepository;
 import com.innowise.userservice.repository.UserSpecification;
