@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @Testcontainers
 @SpringBootTest
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @ActiveProfiles("test")
 public abstract class AbstractIntegrationTest {
 

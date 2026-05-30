@@ -14,12 +14,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+    networks:
+      - microservices-net
+
   redis:
     image: redis:7
     container_name: users-redis
 
     ports:
       - "6379:6379"
+
+    networks:
+      - microservices-net
 
   userservice:
     container_name: users-service
@@ -38,6 +44,12 @@ services:
     depends_on:
       - postgres
       - redis
+    networks:
+      - microservices-net
 
 volumes:
   postgres_data:
+
+networks:
+  microservices-net:
+    external: true
