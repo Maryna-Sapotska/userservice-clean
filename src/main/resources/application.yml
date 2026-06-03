@@ -23,7 +23,7 @@ spring:
     type: redis
 
 jwt:
-  secret: bXktc3VwZXItc2VjcmV0LWtleS1teS1zdXBlci1zZWNyZXQta2V5LTEyMzQ=
+  secret: ${JWT_SECRET:bXktc3VwZXItc2VjcmV0LWtleS1teS1zdXBlci1zZWNyZXQta2V5LTEyMzQ=}
 
 server:
   port: 8080

@@ -22,20 +22,24 @@ public class UserIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
-    void createUser_shouldReturn201() throws Exception {
-
-        String email = "johnn@test.com";
-
+    private CreateUserDto createDto(String email) {
         CreateUserDto dto = new CreateUserDto();
         dto.setName("John");
         dto.setSurname("Doe");
         dto.setEmail(email);
         dto.setBirthDate(LocalDate.of(2000, 1, 1));
+        return dto;
+    }
+
+    @Test
+    void createUser_shouldReturn201() throws Exception {
+
+        String email = "johnn@test.com";
 
         String response = mockMvc.perform(post("/users")
+                        .header("Authorization", "Bearer " + token(1L, "ROLE_ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        .content(objectMapper.writeValueAsString(createDto(email))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.email")
                         .value(email))
@@ -45,27 +49,32 @@ public class UserIntegrationTest extends AbstractIntegrationTest {
 
         UserDTO user = objectMapper.readValue(response, UserDTO.class);
 
-        mockMvc.perform(get("/users/{id}", user.getId()))
+        mockMvc.perform(get("/users/{id}", user.getId())
+                .header("Authorization", "Bearer " + token(1L, "ROLE_ADMIN")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(email));
     }
 
     @Test
-    void getUserById_shouldReturn200() throws Exception {
+    void createUser_shouldReturn403_whenUserRole() throws Exception {
+
+        mockMvc.perform(post("/users")
+                        .header("Authorization", "Bearer " + token(1L, "ROLE_USER"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createDto("user@test.com"))))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getUserById_shouldReturn200_whenOwner() throws Exception {
 
         String email = "johnn@test.com";
 
-        CreateUserDto dto = new CreateUserDto();
-        dto.setName("John");
-        dto.setSurname("Doe");
-        dto.setEmail(email);
-        dto.setBirthDate(LocalDate.of(2000, 1, 1));
-
         String response = mockMvc.perform(post("/users")
+                        .header("Authorization", "Bearer " + token(1L, "ROLE_ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        .content(objectMapper.writeValueAsString(createDto(email))))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.email").value("johnn@test.com"))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -73,9 +82,25 @@ public class UserIntegrationTest extends AbstractIntegrationTest {
         UserDTO user =
                 objectMapper.readValue(response, UserDTO.class);
 
-        mockMvc.perform(get("/users/{id}", user.getId()))
+        mockMvc.perform(get("/users/{id}", user.getId())
+                        .header("Authorization", "Bearer " + token(user.getId(), "ROLE_USER")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email")
                         .value(email));
+    }
+
+    @Test
+    void getUser_shouldReturn403_whenDifferentUser() throws Exception {
+
+        mockMvc.perform(get("/users/{id}", 999L)
+                        .header("Authorization", "Bearer " + token(1L, "ROLE_USER")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getUser_shouldReturn401_whenNoToken() throws Exception {
+
+        mockMvc.perform(get("/users/{id}", 1L))
+                .andExpect(status().isUnauthorized());
     }
 }

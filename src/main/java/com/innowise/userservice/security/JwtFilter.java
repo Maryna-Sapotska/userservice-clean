@@ -1,6 +1,7 @@
 package com.innowise.userservice.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -9,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,12 +53,12 @@ public class JwtFilter extends OncePerRequestFilter {
             String userId = claims.get("userId", String.class);
             List<String> roles = claims.get("roles", List.class);
 
-            List<SimpleGrantedAuthority> authorities = roles
-                    .stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .toList();
-
             if (userId != null && roles != null) {
+
+                List<SimpleGrantedAuthority> authorities = roles
+                        .stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userId,
@@ -65,8 +67,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-        } catch (Exception e) {
+        } catch (JwtException | IllegalArgumentException e) {
             SecurityContextHolder.clearContext();
+            throw new BadCredentialsException("Invalid or expired JWT", e);
         }
         filterChain.doFilter(request, response);
     }

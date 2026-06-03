@@ -61,7 +61,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User with cards retrieved"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
-    @PreAuthorize("hasAnyRole('ADMIN') or #id.toString() == authentication.principal")
+    @PreAuthorize("hasAnyRole('ADMIN') or #userId.toString() == authentication.principal")
     @GetMapping("/{userId}/cards")
     public ResponseEntity<UserWithCardsDto> getUserWithCards(
             @Parameter(description = "User id")
