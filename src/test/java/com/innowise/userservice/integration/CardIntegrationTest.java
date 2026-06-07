@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.innowise.userservice.model.dto.CreateCardDto;
 import com.innowise.userservice.model.dto.CreateUserDto;
 import com.innowise.userservice.model.dto.UserDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,6 +23,13 @@ public class CardIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private String adminToken;
+
+    @BeforeEach
+    void setUp() {
+        adminToken = token(1L, "ROLE_ADMIN");
+    }
+
     @Test
     void createCard_shouldReturn201() throws Exception {
 
@@ -32,6 +40,7 @@ public class CardIntegrationTest extends AbstractIntegrationTest {
         userDto.setBirthDate(LocalDate.of(2000, 1, 1));
 
         String userResponse = mockMvc.perform(post("/users")
+                        .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isCreated())
@@ -48,6 +57,7 @@ public class CardIntegrationTest extends AbstractIntegrationTest {
         cardDto.setExpirationDate(LocalDate.now().plusYears(3));
 
         mockMvc.perform(post("/cards")
+                        .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cardDto)))
                 .andExpect(status().isCreated())
@@ -65,6 +75,7 @@ public class CardIntegrationTest extends AbstractIntegrationTest {
         userDto.setBirthDate(LocalDate.of(2000, 1, 1));
 
         String userResponse = mockMvc.perform(post("/users")
+                        .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andReturn()
@@ -81,12 +92,14 @@ public class CardIntegrationTest extends AbstractIntegrationTest {
 
         for (int i = 0; i < 5; i++) {
             mockMvc.perform(post("/cards")
+                            .header("Authorization", "Bearer " + adminToken)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(cardDto)))
                     .andExpect(status().isCreated());
         }
 
         mockMvc.perform(post("/cards")
+                        .header("Authorization", "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cardDto)))
                 .andExpect(status().isBadRequest());

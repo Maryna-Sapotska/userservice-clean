@@ -3,6 +3,9 @@ package com.innowise.userservice.exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -56,5 +59,26 @@ public class GlobalExceptionHandler {
                         errors.put(error.getField(), error.getDefaultMessage()));
 
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("Access denied");
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<String> handleAuthentication(AuthenticationException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body("Unauthorized");
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<String> handleAuthorizationDenied(AuthorizationDeniedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("Access denied");
     }
 }

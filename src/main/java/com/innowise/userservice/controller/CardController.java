@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,6 +30,7 @@ public class CardController {
     private final CardService cardService;
 
     @Operation(summary = "Create card")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<CardDTO> create(@Valid @RequestBody CreateCardDto dto){
         return ResponseEntity
@@ -37,6 +39,7 @@ public class CardController {
     }
 
     @Operation(summary = "Get card by id")
+    @PreAuthorize("hasRole('ADMIN') or @cardSecurity.isOwner(#id, authentication)")
     @GetMapping("/{id}")
     public ResponseEntity<CardDTO> getById(@PathVariable Long id){
         return ResponseEntity
@@ -44,6 +47,7 @@ public class CardController {
     }
 
     @Operation(summary = "Get all cards with filters and pagination")
+    @PreAuthorize("hasRole('ADMIN')")
     @ApiResponse(responseCode = "200", description = "Cards retrieved")
     @GetMapping
     public ResponseEntity<Page<CardDTO>> getAll(
@@ -79,6 +83,7 @@ public class CardController {
     }
 
     @Operation(summary = "Update card")
+    @PreAuthorize("hasRole('ADMIN') or @cardSecurity.isOwner(#id, authentication)")
     @PatchMapping("/{id}")
     public ResponseEntity<CardDTO> update(@PathVariable Long id,
                                           @Valid @RequestBody UpdateCardDto dto){
@@ -86,6 +91,7 @@ public class CardController {
     }
 
     @Operation(summary = "Delete card")
+    @PreAuthorize("hasRole('ADMIN') or @cardSecurity.isOwner(#id, authentication)")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         cardService.delete(id);

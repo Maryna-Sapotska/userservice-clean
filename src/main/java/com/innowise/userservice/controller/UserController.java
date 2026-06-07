@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,6 +33,7 @@ public class UserController {
 
     @Operation(summary = "Create user")
     @ApiResponse(responseCode = "201", description = "User created")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<UserDTO> create(@Valid @RequestBody CreateUserDto dto) {
         return ResponseEntity
@@ -44,6 +46,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User found"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
+    @PreAuthorize("hasAnyRole('ADMIN') or #id.toString() == authentication.principal")
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
         return ResponseEntity
@@ -58,6 +61,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User with cards retrieved"),
             @ApiResponse(responseCode = "404", description = "User not found")
     })
+    @PreAuthorize("hasAnyRole('ADMIN') or #userId.toString() == authentication.principal")
     @GetMapping("/{userId}/cards")
     public ResponseEntity<UserWithCardsDto> getUserWithCards(
             @Parameter(description = "User id")
@@ -68,6 +72,7 @@ public class UserController {
 
     @Operation(summary = "Get all users with filters and pagination")
     @ApiResponse(responseCode = "200", description = "Users retrieved")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<Page<UserDTO>> getAll(
             @Parameter(description = "Filter by name")
@@ -109,6 +114,7 @@ public class UserController {
     }
 
     @Operation(summary = "Update user")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id,
                                                    @Valid @RequestBody UpdateUserDto dto) {
@@ -117,6 +123,7 @@ public class UserController {
     }
 
     @Operation(summary = "Delete user")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.delete(id);
